@@ -18,12 +18,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build
-        if: contains(github.ref, "release") == false
+        if: contains(github.ref, 'release') == false
         uses: docker/build-push-action@v2
         with:
           push: false
       - name: Build and push
-        if: contains(github.ref, "release")
+        if: contains(github.ref, 'release')
         uses: docker/build-push-action@v2
         with:
           push: true
