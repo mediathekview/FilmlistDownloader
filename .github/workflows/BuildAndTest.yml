@@ -1,0 +1,30 @@
+name: Build and test
+
+on: [push,pull_request]
+
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build $GITHUB_REF_NAME
+        if: $GITHUB_REF_TYPE != 'tag'
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+      - name: Build and push $GITHUB_REF_NAME
+        if: $GITHUB_REF_TYPE == 'tag'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: mediathekview/filmlistdownloader:latest,mediathekview/filmlistdownloader:$GITHUB_REF_NAME

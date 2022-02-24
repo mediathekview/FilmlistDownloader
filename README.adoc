@@ -1,0 +1,52 @@
+# Filmlist downloader
+
+A container to download the latest https://mediathekview.de[MediathekView] Filmlist and extract the XZ archive. This image is mainly for the https://github.com/mediathekview/Filmlistmerger[Filmlistmerger].
+
+## Environment variables
+
+### OUTPUT_PATH
+
+**Default:** /tmp +
+**Description:** The path where the downloaded Filmlist JSON should be copied to
+
+### SERVER_URL
+
+**Default:** https://liste.mediathekview.de +
+**Description:** The url of the server from where the `Filmliste-akt.json` should be downloaded.
+
+## Usage
+
+### Docker
+
+`docker run -v $PWD/download:/output:rw -e OUTPUT_PATH=/output mediathekview/filmlistdownloader`
+
+### Kubernetes
+
+.A K8s CRON Job
+[source,yaml]
+----
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  namespace: mediathekview
+  name: filmlist-download
+  labels:
+    app: filmlistmerger
+spec:
+  schedule: "30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: filmlist-downloader
+              image: mediathekview/filmlistdownloader
+              env:
+                - name: OUTPUT_PATH
+                  value: /output
+              volumeMounts:
+                - mountPath: /output
+                  name: filmlistInput
+              imagePullPolicy: Always
+          restartPolicy: OnFailure
+----
