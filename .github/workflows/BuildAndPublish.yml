@@ -24,4 +24,4 @@ jobs:
         with:
           push: true
           platforms: linux/amd64,linux/arm64,linux/arm/v7
-          tags: mediathekview/filmlistdownloader:latest,mediathekview/filmlistdownloader:${{ env.GITHUB_REF_NAME }}
+          tags: mediathekview/filmlistdownloader:latest,mediathekview/filmlistdownloader:${{github.ref_name}}
